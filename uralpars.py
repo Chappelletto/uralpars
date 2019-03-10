@@ -38,11 +38,17 @@ def parse(html):
 		path = ".//div[@class='col-lg-6 col-md-5 col-sm-12 summary entry-summary']"
 		#.//div[@class='col-lg-6 col-md-5 col-sm-12 summary entry-summary']
 		last_offer = html_tree.xpath(path)[0]
+		category = soup.find('span', class_='posted_in').text
+		try:
+			article = soup.find('span', class_='sku_wrapper').text
+		except: article = ''
 		title = last_offer.xpath('./h1/text()')[0]
 		price = last_offer.xpath("./p[@class='price']//text()")[0]
 		descr = last_offer.xpath("./div[@class='description']/p//text()")[0:-1]
 		
 		data = {
+			'category': category,
+			'article': article,
 			'title': title,
 			'price': price,
 			'descr': descr,
@@ -55,7 +61,9 @@ def write_csv(data):
 	with open('data.csv', 'a') as f:
 		writer = csv.writer(f)
 
-		writer.writerow((data['title'],
+		writer.writerow((data['category'],
+						data['article'],
+						data['title'],
 						 data['price'],
 						data['descr'],
 						data['pic']))
@@ -105,3 +113,7 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
+
+
+
